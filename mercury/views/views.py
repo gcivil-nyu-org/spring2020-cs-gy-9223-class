@@ -66,6 +66,7 @@ class EventAccess(TemplateView):
         to the main page."""
 
         event_code_objects = EventCodeAccess.objects.filter(enabled=True)
+        # event_code_objects = False
         if event_code_objects:
             request.session["event_code_active"] = True
             if request.session.get("event_code_known"):

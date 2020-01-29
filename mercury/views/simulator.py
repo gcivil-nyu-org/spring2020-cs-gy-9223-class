@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 from mercury.models import (
     TemperatureSensor,
+    WindSpeedSensor,
     AccelerationSensor,
     WheelSpeedSensor,
     SuspensionSensor,
@@ -14,6 +15,7 @@ from mercury.models import (
 from ..event_check import require_event_code
 from ..forms import (
     TemperatureForm,
+    WindSpeedForm,
     AccelerationForm,
     WheelSpeedForm,
     SuspensionForm,
@@ -36,6 +38,15 @@ class SimulatorView(TemplateView):
                 created_at=post_created_at, temperature=post_temperature
             )
             temp_data.save()
+
+        if request.POST.get("created_at_winds"):
+            post_created_at = request.POST.get("created_at_winds")
+            post_windSpeed = request.POST.get("windSpeed")
+
+            winds_data = WindSpeedSensor(
+                created_at=post_created_at, windSpeed=post_windSpeed
+            )
+            winds_data.save()
 
         if request.POST.get("created_at_accel"):
             post_created_at = request.POST.get("created_at_accel")
@@ -101,12 +112,14 @@ class SimulatorView(TemplateView):
         now = datetime.datetime.now()
         initial_data = {"created_at": now}
         form_temp = TemperatureForm(initial=initial_data)
+        form_winds = WindSpeedForm(initial=initial_data)
         form_accel = AccelerationForm(initial=initial_data)
         form_ws = WheelSpeedForm(initial=initial_data)
         form_ss = SuspensionForm(initial=initial_data)
         form_fl = FuelLevelForm(initial=initial_data)
         context = {
             "form_temp": form_temp,
+            "form_winds": form_winds,
             "form_accel": form_accel,
             "form_ws": form_ws,
             "form_ss": form_ss,

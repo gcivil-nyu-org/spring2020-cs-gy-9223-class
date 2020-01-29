@@ -7,7 +7,7 @@ from mercury.models import (
     WheelSpeedSensor,
     SuspensionSensor,
     FuelLevelSensor,
-)
+    WindSpeedSensor)
 
 
 class TemperatureForm(forms.ModelForm):
@@ -20,6 +20,20 @@ class TemperatureForm(forms.ModelForm):
             ),
             "temperature": forms.NumberInput(
                 attrs={"id": "post-temperature", "required": True}
+            ),
+        }
+
+
+class WindSpeedForm(forms.ModelForm):
+    class Meta:
+        model = WindSpeedSensor
+        fields = "__all__"
+        widgets = {
+            "created_at" : forms.DateTimeInput(
+                attrs={"id": "post-created-at-winds", "required": True}
+            ),
+            "windSpeed": forms.NumberInput(
+                attrs={"id": "post-windSpeed", "required": True}
             ),
         }
 

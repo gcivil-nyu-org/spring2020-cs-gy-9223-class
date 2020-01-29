@@ -5,6 +5,7 @@ from django.contrib import admin  # noqa f401
 
 from .models import (
     TemperatureSensor,
+    WindSpeedSensor,
     AccelerationSensor,
     WheelSpeedSensor,
     SuspensionSensor,
@@ -13,6 +14,7 @@ from .models import (
 )
 
 admin.site.register(TemperatureSensor)
+admin.site.register(WindSpeedSensor)
 admin.site.register(AccelerationSensor)
 admin.site.register(WheelSpeedSensor)
 admin.site.register(SuspensionSensor)
