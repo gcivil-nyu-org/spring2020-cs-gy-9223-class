@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 if [[ ! -d ".git" ]]; then
   echo "You must run this script from the top-level (root) directory of this repository."
   exit 1

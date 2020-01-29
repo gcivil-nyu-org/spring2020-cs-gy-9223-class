@@ -5,7 +5,7 @@ from .models import (
     WheelSpeedSensor,
     SuspensionSensor,
     FuelLevelSensor,
-    WindSpeedSensor)
+)
 
 logging.basicConfig(level=logging.WARNING)
 log = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class CANMapper:
         self.sensor_map[3] = WheelSpeedSensor
         self.sensor_map[4] = SuspensionSensor
         self.sensor_map[5] = FuelLevelSensor
-        self.sensor_map[6] = WindSpeedSensor
 
     def get_sensor_from_id(self):
         """If an unmapped CAN ID is passed, None is returned, because we

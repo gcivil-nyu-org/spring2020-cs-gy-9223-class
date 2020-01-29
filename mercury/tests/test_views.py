@@ -5,6 +5,7 @@ from django.urls import reverse
 from ..models import (
     EventCodeAccess,
     TemperatureSensor,
+    WindSpeedSensor,
     AccelerationSensor,
     WheelSpeedSensor,
     SuspensionSensor,
@@ -232,6 +233,21 @@ class TestSimulatorPost(TestCase):
         )
         self.assertEqual(EXPECTED_CREATED_AT, foo.created_at)
         self.assertEqual(temp_value, foo.temperature)
+
+    def test_SimulatorView_POST_winds(self):
+        temp_value = 100
+        response = self.client.post(
+            reverse(self.simulator_url),
+            data={"created_at_winds": CREATED_AT, "windSpeed": temp_value},
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertTemplateUsed("simulator.html")
+
+        foo = WindSpeedSensor.objects.get(
+            windSpeed=temp_value, created_at=CREATED_AT
+        )
+        self.assertEqual(EXPECTED_CREATED_AT, foo.created_at)
+        self.assertEqual(temp_value, foo.windSpeed)
 
     def test_SimulatorView_POST_accel(self):
         x = 1002

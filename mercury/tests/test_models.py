@@ -2,6 +2,7 @@ from django.test import TestCase
 import datetime
 from mercury.models import (
     TemperatureSensor,
+    WindSpeedSensor,
     AccelerationSensor,
     WheelSpeedSensor,
     SuspensionSensor,
@@ -11,6 +12,7 @@ from mercury.models import (
 
 # Test value constants that should all work
 TEST_TEMP = 999.0
+TEST_WIND_SPEED = 12
 TEST_ACCEL_Y = 9.81
 TEST_WHEEL_SPEED_FR = 30
 TEST_SUSPENSION_FR = 2
@@ -34,6 +36,9 @@ def create_simulated_data_objects():
     FuelLevelSensor.objects.create(
         current_fuel_level=TEST_FUEL, created_at=datetime.datetime.now()
     )
+    WindSpeedSensor.objects.create(
+        windSpeed=TEST_WIND_SPEED, created_at=datetime.datetime.now()
+    )
     EventCodeAccess.objects.create(event_code=TEST_EVENT_CODE, enabled=False)
 
 
@@ -44,6 +49,10 @@ class TestSensorModels(TestCase):
     def test_temp(self):
         foo = TemperatureSensor.objects.get(temperature=TEST_TEMP)
         self.assertEqual(foo.temperature, TEST_TEMP)
+
+    def test_wind_speed(self):
+        foo = WindSpeedSensor.objects.get(windSpeed=TEST_WIND_SPEED)
+        self.assertEqual(foo.windSpeed, TEST_WIND_SPEED)
 
     def test_acceleration(self):
         foo = AccelerationSensor.objects.get(acceleration_x=TEST_ACCEL_Y)
