@@ -19,7 +19,7 @@ before_script:
 - flake8 --version
 
 script:
-- black --check --exclude "migrations/" mysite mercury ag_data
+- black --check .
 - flake8 mysite/ mercury/ ag_data/
 - coverage run --source=mysite,mercury,ag_data --omit="migrations/*" manage.py test
 
