@@ -7,28 +7,35 @@ from utils import get_logger
 
 class LANClient:
 	
-	#Class variables
-	logging = get_logger("LAN_CLIENT_LOG_FILE")
-	url = os.environ["LAN_SERVER"]
+	def __init__(self,log_file_name = None,lan_server_url = None):
+		if log_file_name is None:
+			self.logging = get_logger("LAN_CLIENT_LOG_FILE")
+		else:
+			self.logging = log_file_name
+		if lan_server_url is None:
+			self.url = os.environ["LAN_SERVER"]
+		else:
+			self.url = lan_server_url
+			
+	#Function to ping the LAN server
+	#Accepts payload as a python dictionary
+	def ping_lan_server(self,payload):
 
-	#Function to ping the server
-	def ping_lan_server(self):
+		self.logging.info("Pinging")
 
-		LANClient.logging.info("Pinging")
+		try:
+			#payload = {"key1": "value1", "key2": "value2"}
+			self.logging.info("data: " + json.dumps(payload))
+			response = requests.post(self.url, data=payload)
+			response.raise_for_status()
+			return response
 
-		while True:
-			try:
-				payload = {"key1": "value1", "key2": "value2"}
-				LANClient.logging.info("data: " + json.dumps(payload))
-				response = requests.post(LANClient.url, data=payload)
-				response.raise_for_status()
+		except HTTPError as http_err:
+			self.logging.error("HTTP error occurred: {}".format(str(http_err)))
+			# re-raised so that it can be handled further up the call stack
+			raise
 
-			except HTTPError as http_err:
-				LANClient.logging.error("HTTP error occurred: {}".format(str(http_err)))
+		except Exception as err:
+			self.logging.error("error occurred: {}".format(str(err)))
+			raise
 
-			except Exception as err:
-				LANClient.logging.error("error occurred: {}".format(str(err)))
-
-			else:
-				time.sleep(1)
- 
