@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from requests.exceptions import HTTPError
-from .utils import get_logger
+from utils import get_logger
 
 
 class LANClient:
@@ -25,11 +25,11 @@ class LANClient:
     # Function to ping the LAN server
     # Accepts payload as a python dictionary
     def ping_lan_server(self, payload):
-        self.logging.info("Pinging")
+        self.logging.info(self.url +" : "+json.dumps(payload) )
 
         try:
             # payload = {"key1": "value1", "key2": "value2"}
-            self.logging.info("data: " + json.dumps(payload))
+            #self.logging.info("data: " + json.dumps(payload))
             response = requests.post(self.url, data=payload)
             response.raise_for_status()
             return response

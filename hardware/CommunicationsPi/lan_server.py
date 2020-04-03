@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from .utils import get_logger
+from utils import get_logger
 
-log = get_logger("LAN_SERVER_LOG_FILE")
-
+#log = get_logger("LAN_SERVER_LOG_FILE")
+global log
 
 class Server(BaseHTTPRequestHandler):
     def _set_response(self):
