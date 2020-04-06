@@ -26,7 +26,7 @@ install:
 
 build_script:
   #- sh scripts/appveyor.sh
-  - psql -c 'create database mercury;' -U postgres
+  - psql -c 'create database mercury;'
   - python3 manage.py migrate
   - python3 manage.py collectstatic --noinput
   - black --check --diff .
