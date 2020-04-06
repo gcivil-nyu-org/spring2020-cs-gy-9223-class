@@ -12,17 +12,13 @@ services:
   - xvfb
 
 before_build:
-  - sh: wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
-  - sh: mkdir geckodriver
-  - sh: tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
-  - sh: export PATH=$PATH:$PWD/geckodriver
 
 install:
-  - psql -c 'create database mercury;' -U postgres
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  #- "SET PATH=%POSTGRES_PATH%\\bin;%MYSQL_PATH%\\bin;%PATH%"
   - "python --version"
   - pip install --upgrade pip
   - pip install -r requirements.txt
