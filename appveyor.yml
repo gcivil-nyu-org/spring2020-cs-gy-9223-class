@@ -30,8 +30,8 @@ build_script:
   - createdb "mercury"
   #- sh scripts/appveyor.sh
   #- psql -c 'create database mercury;'
-  - python3 manage.py migrate
-  - python3 manage.py collectstatic --noinput
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
   - black --check --diff .
   - flake8 .
   - coverage run manage.py test
