@@ -15,6 +15,7 @@ before_build:
   - sh: wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
   - sh: mkdir geckodriver
   - sh: tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
+  - sh: ECHO DATABASE_URL=postgres://postgres@postgres:5432/postgres
   - sh: export PATH=$PATH:$PWD/geckodriver
   - sh: psql -c 'create database mercury;' -U postgres
   - sh: python manage.py migrate
