@@ -17,6 +17,7 @@ before_build:
   - sh: tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
   - sh: export PATH=$PATH:$PWD/geckodriver
 
+
 install:
   - sh: psql -c 'create database mercury;' -U postgres
   - sh: python manage.py migrate
@@ -29,6 +30,7 @@ install:
   - pip install -r test-requirements.txt
 
 build_script:
+  -
   - black --check --diff .
   - flake8 .
   - coverage run manage.py test
