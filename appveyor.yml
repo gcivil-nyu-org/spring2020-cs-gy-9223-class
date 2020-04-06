@@ -1,0 +1,28 @@
+services:
+  - postgresql
+  - xvfb
+
+before_build:
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
+
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+
+before_script:
+  - psql -c 'create database mercury;' -U postgres
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
+
+script:
+  - black --check --diff .
+  - flake8 .
+  - coverage run manage.py test
+
+after_script:
+  - coveralls
+  - cat geckodriver.log
