@@ -18,9 +18,9 @@ before_build:
   - sh: export PATH=$PATH:$PWD/geckodriver
 
 install:
-  - sh: "psql -c 'create database mercury;' -U postgres"
-  - sh: python manage.py migrate
-  - sh: python manage.py collectstatic --noinput
+  - psql -c 'create database mercury;' -U postgres
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python --version"
