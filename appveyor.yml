@@ -24,7 +24,8 @@ install:
   - pip install -r test-requirements.txt
 
 build_script:
-  - psql -c 'create database mercury;' -U postgres
+  - sh appveyor.sh
+  #- psql -c 'create database mercury;' -U postgres
   - python3 manage.py migrate
   - python3 manage.py collectstatic --noinput
   - black --check --diff .
