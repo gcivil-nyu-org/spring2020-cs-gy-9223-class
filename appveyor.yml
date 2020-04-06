@@ -27,9 +27,9 @@ install:
 build_script:
   - SET PGUSER=postgres
   - SET PGPASSWORD=Password12!
-  - createdb "mercury"
+  #- createdb "mercury"
   #- sh scripts/appveyor.sh
-  #- psql -c 'create database mercury;'
+  - psql -c 'create database mercury;'
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - black --check --diff .
