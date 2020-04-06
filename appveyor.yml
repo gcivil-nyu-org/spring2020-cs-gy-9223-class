@@ -1,3 +1,7 @@
+services:
+  - postgresql
+  - xvfb
+
 environment:
   matrix:
     - PYTHON: "C:\\Python36-x64"
@@ -7,12 +11,9 @@ environment:
 init:
   - ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
 
-services:
-  - postgresql
-  - xvfb
-
 before_build:
-  - sh scripts/appveyor.sh
+  - psql -c 'create database mercury;' -U postgres
+  #- sh scripts/appveyor.sh
   - python3 manage.py migrate
   - python3 manage.py collectstatic --noinput
 
