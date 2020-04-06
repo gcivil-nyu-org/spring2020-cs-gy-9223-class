@@ -18,13 +18,14 @@ install:
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "SET PATH=%POSTGRES_PATH%\\bin;%PATH%"
+  - createdb "mercury"
   - "python --version"
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 
 build_script:
-  - sh scripts/appveyor.sh
+  #- sh scripts/appveyor.sh
   #- psql -c 'create database mercury;' -U postgres
   - python3 manage.py migrate
   - python3 manage.py collectstatic --noinput
