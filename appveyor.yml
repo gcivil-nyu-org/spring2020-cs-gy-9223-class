@@ -21,6 +21,6 @@ build_script:
   - flake8 .
   - coverage run manage.py test
 
-after_script:
+after_test:
   - coveralls
   - cat geckodriver.log
