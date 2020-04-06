@@ -12,6 +12,7 @@ services:
   - xvfb
 
 before_build:
+  - sh scripts/appveyor.sh
 
 install:
   - python manage.py migrate
