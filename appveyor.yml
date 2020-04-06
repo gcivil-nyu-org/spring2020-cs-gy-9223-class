@@ -12,10 +12,11 @@ services:
   - xvfb
 
 before_build:
-  - wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
-  - mkdir geckodriver
-  - tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
-  - export PATH=$PATH:$PWD/geckodriver
+  #- wget https://github.com/mozilla/geckodriver/releases/download/v0.26
+  #.0/geckodriver-v0.26.0-linux64.tar.gz
+  #- mkdir geckodriver
+  #- tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
+  #- export PATH=$PATH:$PWD/geckodriver
   - psql -c 'create database mercury;' -U postgres
   - python manage.py migrate
   - python manage.py collectstatic --noinput
