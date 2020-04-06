@@ -1,11 +1,12 @@
 services:
-  - postgresql96
+  - postgresql
   - xvfb
 
 environment:
   global:
     POSTGRES_PATH: C:\Program Files\PostgreSQL\9.6
-
+    PGUSER: postgres
+    PGPASSWORD: postgres
 
   matrix:
     - PYTHON: "C:\\Python36"
@@ -25,8 +26,6 @@ install:
   - pip install -r test-requirements.txt
 
 build_script:
-  - SET PGUSER=postgres
-  - SET PGPASSWORD=postgres
   #- createdb "mercury"
   #- sh scripts/appveyor.sh
   - psql -c 'create database mercury;'
