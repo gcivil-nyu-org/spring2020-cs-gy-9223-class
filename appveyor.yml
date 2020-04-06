@@ -4,7 +4,7 @@ services:
 
 environment:
   global:
-    POSTGRES_PATH: C:\Program Files\PostgreSQL\9.5
+    POSTGRES_PATH: "C:\Program Files\PostgreSQL\9.6"
 
   matrix:
     - PYTHON: "C:\\Python36-x64"
