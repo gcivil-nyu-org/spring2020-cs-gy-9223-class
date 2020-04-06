@@ -19,11 +19,11 @@ before_build:
   - psql -c 'create database mercury;' -U postgres
   - python manage.py migrate
   - python manage.py collectstatic --noinput
-
-install:
   - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
   - python --version
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+
+install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
