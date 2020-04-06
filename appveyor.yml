@@ -25,8 +25,8 @@ install:
   - pip install -r test-requirements.txt
 
 build_script:
-  - SET PGUSER=postgres
-  - SET PGPASSWORD=Password12!
+  - SET PGUSER=user
+  - SET PGPASSWORD=password
   #- createdb "mercury"
   #- sh scripts/appveyor.sh
   - psql -c 'create database mercury;'
