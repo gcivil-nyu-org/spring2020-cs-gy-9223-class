@@ -1,3 +1,12 @@
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36-x64"
+        PYTHON_VERSION: "3.6.x"
+        PYTHON_ARCH: "64"
+
+init:
+  - ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
+
 services:
   - postgresql
   - xvfb
@@ -12,6 +21,9 @@ before_build:
   - python manage.py collectstatic --noinput
 
 install:
+  - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+  - python --version
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
