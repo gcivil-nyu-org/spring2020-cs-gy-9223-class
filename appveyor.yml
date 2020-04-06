@@ -18,7 +18,7 @@ before_build:
   - sh: export PATH=$PATH:$PWD/geckodriver
 
 install:
-  - bash -c "psql -c 'create database mercury;' -U postgres"
+  - sh: "psql -c 'create database mercury;' -U postgres"
   - sh: python manage.py migrate
   - sh: python manage.py collectstatic --noinput
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
