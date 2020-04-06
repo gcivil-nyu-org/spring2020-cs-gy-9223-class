@@ -13,10 +13,10 @@ services:
 
 before_build:
   - sh scripts/appveyor.sh
-
-install:
   - python3 manage.py migrate
   - python3 manage.py collectstatic --noinput
+
+install:
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   #- "SET PATH=%POSTGRES_PATH%\\bin;%MYSQL_PATH%\\bin;%PATH%"
