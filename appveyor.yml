@@ -7,16 +7,14 @@ before_build:
   - mkdir geckodriver
   - tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
   - export PATH=$PATH:$PWD/geckodriver
+  - psql -c 'create database mercury;' -U postgres
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
 
 install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
-
-before_script:
-  - psql -c 'create database mercury;' -U postgres
-  - python manage.py migrate
-  - python manage.py collectstatic --noinput
 
 script:
   - black --check --diff .
