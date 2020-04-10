@@ -28,7 +28,8 @@ install:
 build_script:
   #- createdb "mercury"
   #- sh scripts/appveyor.sh
-  - sudo -u postgres psql -c 'create database mercury;'
+  - createuser --createdb -U postgres --login -P 'postgres'
+  - psql -c 'create database mercury;'
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - black --check --diff .
