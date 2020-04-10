@@ -26,7 +26,8 @@ install:
   - pip install -r test-requirements.txt
 
 build_script:
-  - psql -c "create database mercury;" -U postgres
+  - psql postgres://postgres:@localhost:5432 -c ‘create database mercury;’
+  #- psql -c "create database mercury;" -U postgres
   #- psql -c 'create database mercury;'
   - echo "finished executing psql -c 'create database mercury;"
   - python manage.py migrate
