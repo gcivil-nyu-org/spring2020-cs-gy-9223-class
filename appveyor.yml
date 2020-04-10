@@ -28,6 +28,7 @@ install:
 build_script:
   - psql -c "create database mercury;" -U postgres
   #- psql -c 'create database mercury;'
+  - echo "finished executing psql -c 'create database mercury;"
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - black --check --diff .
