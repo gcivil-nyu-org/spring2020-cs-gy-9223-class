@@ -1,5 +1,5 @@
 services:
-  - postgresql
+  - postgresql96
   - xvfb
 
 environment:
