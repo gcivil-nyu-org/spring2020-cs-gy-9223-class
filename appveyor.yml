@@ -47,6 +47,8 @@ build_script:
   #- psql -c "create database mercury;" -U postgres
   #- psql -c 'create database mercury;'
   #- echo "finished executing psql -c 'create database mercury;"
+  - import socket
+  - socket.getaddrinfo('localhost', 8080)
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - black --check --diff .
