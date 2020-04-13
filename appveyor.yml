@@ -39,8 +39,8 @@ install:
 
 build_script:
   - psql -c "create database mercury;"
-  - set http_proxy=127.0.0.1:8000
-  - set https_proxy=127.0.0.1:8000
+  - set http_proxy=127.0.0.1:80
+  - set https_proxy=127.0.0.1:443
   #- psql postgres://postgres:postgres@localhost:5432 -c 'create database mercury;'
   #- psql postgres://postgres:@localhost:5432 -c 'create database mercury;'
   #- echo "localhost:5432:mercury:postgres:postgres" > ~/.pgpass
