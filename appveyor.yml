@@ -55,5 +55,5 @@ build_script:
   #- coverage run manage.py test
 
 after_test:
-  - coveralls
-  - cat geckodriver.log
+  #- coveralls
+  #- cat geckodriver.log
