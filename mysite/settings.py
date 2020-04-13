@@ -109,6 +109,18 @@ if "TRAVIS" in os.environ:  # pragma: no cover
             "PORT": "5432",
         }
     }
+elif "APPVEYOR" in os.environ:
+    DEBUG = True
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "mercury",
+            "USER": "postgres",
+            "PASSWORD": "",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
 elif "DB" in os.environ and os.environ["DB"] == "postgres":  # pragma: nocover
     DATABASES = {
         "default": {
