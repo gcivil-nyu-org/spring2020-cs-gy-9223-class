@@ -35,9 +35,9 @@ install:
   - echo "localhost:*:mercury:postgres:postgres" > %userprofile%\pgpass.conf
   - SET PGPASSFILE=C:\Program Files\PostgreSQL\9.6\pgpass.conf
   - set PGPASSWORD="postgres"
-  - psql -c "create database mercury;" -U postgres
 
 build_script:
+  - psql -c "create database mercury;" -U postgres
   #- psql postgres://postgres:postgres@localhost:5432 -c 'create database mercury;'
   #- psql postgres://postgres:@localhost:5432 -c 'create database mercury;'
   #- echo "localhost:5432:mercury:postgres:postgres" > ~/.pgpass
