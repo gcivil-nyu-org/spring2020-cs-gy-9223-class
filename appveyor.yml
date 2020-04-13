@@ -1,5 +1,5 @@
 services:
-  - postgresql96
+  - postgresql
   - xvfb
 
 environment:
@@ -9,8 +9,8 @@ environment:
     POSTGRES_ENV_POSTGRES_USER: postgres
     POSTGRES_ENV_POSTGRES_PASSWORD: postgres
     POSTGRES_ENV_POSTGRES_DB: mercury
-    PGUSER: appveyor
-    #PGPASSWORD: postgres
+    PGUSER: postgres
+    PGPASSWORD: Password12!
 
   matrix:
     - PYTHON: "C:\\Python36"
@@ -38,7 +38,7 @@ install:
   #- set PGPASSWORD="Password12!"
 
 build_script:
-  - psql -c "create database mercury;" -U appveyor
+  - psql -c "create database mercury;"
   #- psql postgres://postgres:postgres@localhost:5432 -c 'create database mercury;'
   #- psql postgres://postgres:@localhost:5432 -c 'create database mercury;'
   #- echo "localhost:5432:mercury:postgres:postgres" > ~/.pgpass
