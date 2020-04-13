@@ -26,9 +26,9 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "SET PATH=%POSTGRES_PATH%\\bin;%PATH%"
   - "python --version"
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
+  #- pip install --upgrade pip
+  #- pip install -r requirements.txt
+  #- pip install -r test-requirements.txt
   - psql --version
   #- echo localhost:*:mercury:postgres:postgres > C:\Program Files\PostgreSQL\9
   #- .6\pgpass.conf
