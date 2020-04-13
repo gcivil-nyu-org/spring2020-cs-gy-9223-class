@@ -35,8 +35,8 @@ build_script:
   - psql -c "create database mercury;"
   - echo $http_proxy
   - echo $https_proxy
-  - set http_proxy=http://localhost:80
-  - set https_proxy=https://localhost:443
+  - set http_proxy=http://127.0.0.1:80
+  - set https_proxy=https://127.0.0.1:443
   - echo $http_proxy
   - echo $https_proxy
   #- python test_socket.py
