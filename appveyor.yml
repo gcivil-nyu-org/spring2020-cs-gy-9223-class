@@ -30,24 +30,12 @@ install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
   - psql --version
-  #- echo localhost:*:mercury:postgres:postgres > C:\Program Files\PostgreSQL\9
-  #- .6\pgpass.conf
-  #- echo "localhost:*:mercury:postgres:postgres" > pgpass.conf
-  #- echo "localhost:*:mercury:postgres:postgres" > %userprofile%\pgpass.conf
-  #- SET PGPASSFILE=C:\Program Files\PostgreSQL\9.6\pgpass.conf
-  #- set PGPASSWORD="Password12!"
 
 build_script:
   - psql -c "create database mercury;"
-  - set http_proxy=http://localhost:8080
-  - set https_proxy=https://localhost:8080
-  #- psql postgres://postgres:postgres@localhost:5432 -c 'create database mercury;'
-  #- psql postgres://postgres:@localhost:5432 -c 'create database mercury;'
-  #- echo "localhost:5432:mercury:postgres:postgres" > ~/.pgpass
-  #- psql -c "create database mercury;" -U postgres
-  #- psql -c 'create database mercury;'
-  #- echo "finished executing psql -c 'create database mercury;"
-  - python test_socket.py
+  - set http_proxy=http://localhost:80
+  - set https_proxy=https://localhost:443
+  #- python test_socket.py
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - black --check --diff .

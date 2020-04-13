@@ -1,3 +1,7 @@
 import socket
 
-print(socket.getaddrinfo("localhost", 8080))
+print("localhost:80")
+print(socket.getaddrinfo("localhost", 80))
+
+print("localhost:443")
+print(socket.getaddrinfo("localhost", 443))
