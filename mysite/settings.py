@@ -97,19 +97,7 @@ if os.path.isfile(dotenv_file):  # pragma: no cover
     dotenv.load_dotenv(dotenv_file)
     DEBUG = True
 
-if "TRAVIS" in os.environ:  # pragma: no cover
-    DEBUG = True
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "mercury",
-            "USER": "postgres",
-            "PASSWORD": "",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
-elif "APPVEYOR" in os.environ:
+if ("TRAVIS" in os.environ) or ("APPVEYOR" in os.environ):  # pragma: no cover
     DEBUG = True
     DATABASES = {
         "default": {
