@@ -72,6 +72,7 @@ class TestGrafana(TestCase):
         "longitude": 200,
     }
 
+
     def create_gfconfig(self):
         config = GFConfig.objects.create(
             gf_host=HOST,
