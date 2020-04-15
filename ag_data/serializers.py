@@ -1,54 +1,52 @@
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework import serializers
-from .models import AGEvent, AGSensor, AGMeasurement
-import uuid
+
+from ag_data.models import AGEvent, AGSensor, AGMeasurement
 
 
-class AGEventSerializer(serializers.ModelSerializer):
-    agEventID = serializers.UUIDField(
-        source="event_uuid", read_only=True, default=uuid.uuid4
-    )
-    agEventName = serializers.CharField(source="event_name")
-    agEventDate = serializers.DateTimeField(source="event_date")
-    agEventDescription = serializers.CharField(source="event_description")
+class AGJSONSerializerField(serializers.JSONField):
+    """
+    Modified JSONFieldSerializer
+    If self.binary is True, this serializer will only save data as dict-like value in JSONField
+    If self.binary is False and the data is json string, the data will be saved as string
+    """
 
-    class Meta:
-        model = AGEvent
-        fields = ["agEventID", "agEventName", "agEventDate", "agEventDescription"]
+    def to_internal_value(self, data):
 
+        try:
+            # If the binary is true, check whether data is a valid Json String
+            if self.binary or getattr(data, "is_json_string", False):
+                if isinstance(data, bytes):
+                    data = data.decode()
+                return json.loads(data)
+        except (TypeError, ValueError):
+            # If the data is a dict, return it directly
+            return data
 
-class AGSensorSerializer(serializers.ModelSerializer):
-    agSensorID = serializers.IntegerField(source="sensor_id", read_only=True)
-    agSensorName = serializers.CharField(source="sensor_name")
-    agSensorDescription = serializers.CharField(source="sensor_description")
-    agSensorFormula = serializers.IntegerField(source="sensor_processing_formula")
-    agSensorFormat = serializers.CharField(source="sensor_format")
-
-    class Meta:
-        model = AGSensor
-        fields = [
-            "agSensorID",
-            "agSensorName",
-            "agSensorDescription",
-            "agSensorFormula",
-            "agSensorFormat",
-        ]
+        """If the binary is false, check whether data is a valid Json Dict"""
+        try:
+            json.dumps(data, cls=self.encoder)
+        except ValueError:
+            self.fail("Invalid")
+        return data
 
 
 class AGMeasurementSerializer(serializers.ModelSerializer):
-    agMeasurementID = serializers.UUIDField(
-        source="measurement_uuid", read_only=True, default=uuid.uuid4
+    """
+    Serializer for the Model AGMeasurement.
+    """
+
+    sensor_id = serializers.PrimaryKeyRelatedField(
+        read_only=False, queryset=AGSensor.objects.all()
     )
-    agMeasurementTimestamp = serializers.DateTimeField(source="measurement_timestamp")
-    agMeasurementEvent = serializers.UUIDField(source="measurement_event")
-    agMeasurementSensor = serializers.UUIDField(source="measurement_sensor")
-    agMeasurementValue = serializers.JSONField(source="measurement_value")
+    event_uuid = serializers.PrimaryKeyRelatedField(
+        read_only=False, queryset=AGEvent.objects.all()
+    )
+    value = AGJSONSerializerField(binary=True, encoder=DjangoJSONEncoder)
+    timestamp = serializers.DateTimeField()
 
     class Meta:
         model = AGMeasurement
-        fields = [
-            "agMeasurementID",
-            "agMeasurementTimestamp",
-            "agMeasurementEvent",
-            "agMeasurementSensor",
-            "agMeasurementValue",
-        ]
+        fields = ("timestamp", "sensor_id", "event_uuid", "value")

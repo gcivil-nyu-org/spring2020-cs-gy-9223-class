@@ -1,15 +1,36 @@
 from django.db import models
+import uuid
+from django.utils import timezone
 
 
-# Note: the Event will have an ID automatically
-class Event(models.Model):
-    event_name = models.CharField(max_length=100, null=False, unique=True)
-    event_location = models.CharField(max_length=100, null=False, unique=False)
-    date = models.DateTimeField(null=False)
-    comments = models.TextField(null=True)
+class GFConfig(models.Model):
+    """
+    Grafana configs
+    """
 
-    def __str__(self):  # pragma: no cover
-        return Event.__name__
+    gf_name = models.CharField(max_length=64)
+    gf_host = models.CharField(max_length=128)
+    gf_token = models.CharField(
+        max_length=256
+    )  # token only, without the prefix "Bearer "
+    gf_dashboard_uid = models.CharField(max_length=64)
+    gf_db_host = models.CharField(max_length=128)
+    gf_db_name = models.CharField(max_length=64)
+    gf_db_username = models.CharField(max_length=64)
+    gf_db_pw = models.CharField(max_length=256)
+    gf_current = models.BooleanField(default=False, blank=True)
+
+
+class AGEvent(models.Model):
+    """This model stores the information about events. When a new event is created,
+    a UUID4-typed event_uuid will be assigned to this event and also store the current
+    date for this event. """
+
+    event_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event_name = models.CharField(max_length=40, blank=True)
+    event_date = models.DateTimeField(default=timezone.now)
+    event_description = models.CharField(max_length=100, null=False, blank=True)
+    event_location = models.CharField(max_length=100, null=False, blank=True)
 
 
 class TemperatureSensor(models.Model):

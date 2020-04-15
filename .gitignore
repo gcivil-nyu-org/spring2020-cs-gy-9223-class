@@ -1,3 +1,5 @@
+symmetricds
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
@@ -134,3 +136,6 @@ env/
 .vscode/
 staticfiles/
 db.sqlite3
+
+# Vim temporary files
+*.swp
