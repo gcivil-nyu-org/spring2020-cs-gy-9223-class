@@ -15,3 +15,9 @@ selenium==3.141.0
 django-annoying
 mock
 requests
+<<<<<<< HEAD
+=======
+matplotlib
+attr
+django-bootstrap4
+>>>>>>> f436822098901f3311b16b9ce21751638655141a
