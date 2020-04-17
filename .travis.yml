@@ -62,7 +62,13 @@ jobs:
       services:
           - docker
 
-      install:
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get install docker.io
+        # - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+        - docker-compose --version
+
+      before_script:
         - docker pull nyumotorsportstelemetryorg/mercury || true
         # prepare qemu for arm emulation on x64 hardware
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
