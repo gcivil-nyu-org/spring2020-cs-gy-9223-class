@@ -65,7 +65,8 @@ jobs:
 
       before_install:
         - sudo apt-get update
-        - sudo apt-get install docker.io
+        # - sudo apt-get install docker.io
+        - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         # - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
         - docker-compose --version
         - sudo rm /usr/local/bin/docker-compose
