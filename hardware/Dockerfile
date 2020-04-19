@@ -8,8 +8,8 @@ COPY ./pi_requirements.txt .
 RUN sudo python3 -m pip install pip --upgrade --force
 RUN sudo pip3 install -r pi_requirements.txt
 
-# COPY ./hardware /hardware/
+COPY . hardware/
 
 # might want to create a hardware-specific requirements.txt for stuff we need to run that
 
-# CMD ["python", "-m", "hardware.main"]
+CMD ["python3", "-m", "hardware.main"]

@@ -7,8 +7,4 @@ pyserial==3.4
 python-dotenv==0.13.0
 PyYAML==5.3.1
 requests==2.23.0
-<<<<<<< HEAD
-=======
-serial==0.0.97
->>>>>>> updated docker build
 urllib3==1.25.9
