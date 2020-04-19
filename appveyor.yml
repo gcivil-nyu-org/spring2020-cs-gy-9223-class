@@ -26,28 +26,28 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "SET PATH=%POSTGRES_PATH%\\bin;%PATH%"
   - "python --version"
-  #- pip install --upgrade pip
-  #- pip install -r requirements.txt
-  #- pip install -r test-requirements.txt
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
   - psql --version
 
 build_script:
   - psql -c "create database mercury;"
-  - echo $http_proxy
-  - echo $https_proxy
-  - set
-  - echo set
-  - set http_proxy=http://127.0.0.1:80
-  - set https_proxy=https://127.0.0.1:443
-  - echo $http_proxy
-  - echo $https_proxy
+  #- echo $http_proxy
+  #- echo $https_proxy
+  #- set
+  # echo set
+  #- set http_proxy=http://127.0.0.1:80
+  #- set https_proxy=https://127.0.0.1:443
+  #- echo $http_proxy
+  #- echo $https_proxy
   #- python test_socket.py
-  #- python manage.py migrate
-  #- python manage.py collectstatic --noinput
-  #- black --check --diff .
-  #- flake8 .
-  #- coverage run manage.py test
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
+  - black --check --diff .
+  - flake8 .
+  - coverage run manage.py test
 
 after_test:
-  #- coveralls
-  #- cat geckodriver.log
+  - coveralls
+  - cat geckodriver.log
