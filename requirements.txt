@@ -14,3 +14,9 @@ drf-yasg
 selenium==3.141.0
 django-annoying
 djangorestframework
+mock
+requests
+matplotlib
+attr
+django-bootstrap4
+django-js-reverse

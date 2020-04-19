@@ -57,7 +57,31 @@ class Grafana:
         self.base_panel_width = 15
         self.base_panel_height = 12
 
-    def generate_random_string(self, length):
+    @staticmethod
+    def create_api_key(auth_url, name, role):
+        # delete keys with same name or level of permission
+        url = auth_url + "/api/auth/keys"
+        rsp = requests.get(url)
+        data = json.loads(rsp.text)
+        for D in data:
+            if name == D["name"] or role == D["role"]:
+                requests.delete(url + "/" + str(D["id"]))
+
+        # create new key
+        rsp = requests.post(url, data={"name": name, "role": role})
+        return json.loads(rsp.text)["key"]
+
+    @staticmethod
+    def create_safe_string(input_string):
+        """
+        Reformats the input string to be lowercase and with spaces replaced by '-'.
+        :param input_string: string
+        :return: reformatted string
+        """
+        return input_string.strip().lower().replace(" ", "-")
+
+    @staticmethod
+    def generate_random_string(length):
         """
         Generates a random string of letters of given length.
         :param length: Target length for the random string
@@ -107,8 +131,10 @@ class Grafana:
         """
         # If there are spaces in the name, the GF API will replace them with dashes
         # to generate the "slug". A slug can be used to query the API.
+        formatted_event_name = self.create_safe_string(event_name)
+
         endpoint = os.path.join(
-            self.hostname, "api/dashboards/db", event_name.lower().replace(" ", "-"),
+            self.hostname, "api/dashboards/db", formatted_event_name
         )
         response = requests.get(url=endpoint, auth=("api_key", self.api_token))
 
@@ -118,9 +144,9 @@ class Grafana:
             return None
 
     def get_dashboard_url_by_name(self, name):
-        name = name.lower().replace(" ", "-")
+        search_name = self.create_safe_string(name)
 
-        dashboard = self.get_dashboard_by_name(name)
+        dashboard = self.get_dashboard_by_name(search_name)
         if dashboard:
             endpoint = dashboard["meta"]["url"].strip("/")
             url = os.path.join(self.hostname, endpoint)
@@ -195,6 +221,19 @@ class Grafana:
                 "timezone": "browser",
                 "schemaVersion": None,
                 "version": 0,
+                "time": {"from": "now-5m", "to": "now"},
+                "timepicker": {
+                    "refresh_intervals": [
+                        "0.1s",
+                        "0.5s",
+                        "1s",
+                        "5s",
+                        "10s",
+                        "30s",
+                        "1m",
+                    ]
+                },
+                "refresh": "0.5s",
             },
             "folderId": 0,
             "overwrite": False,
@@ -270,9 +309,8 @@ class Grafana:
         return False
 
     def delete_dashboard_by_name(self, name):
-        endpoint = os.path.join(
-            self.hostname, "api/dashboards/db", name.lower().replace(" ", "-")
-        )
+        search_name = self.create_safe_string(name)
+        endpoint = os.path.join(self.hostname, "api/dashboards/db", search_name)
         response = requests.get(url=endpoint, auth=("api_key", self.api_token))
 
         dashboard = response.json().get("dashboard")
@@ -298,6 +336,11 @@ class Grafana:
         - Datasource with the same name already exists
 
         """
+        if self.database_password == "":
+            require_ssl = "disable"
+        else:
+            require_ssl = "require"
+
         db = {
             "id": None,
             "orgId": None,
@@ -310,7 +353,7 @@ class Grafana:
             "database": self.database_name,
             "basicAuth": False,
             "isDefault": True,
-            "jsonData": {"postgresVersion": 903, "sslmode": "require"},
+            "jsonData": {"postgresVersion": 903, "sslmode": require_ssl},
         }
 
         headers = {"Content-Type": "application/json"}
@@ -354,8 +397,81 @@ class Grafana:
                 return True
             else:
                 return False
-        except KeyError:
+        except (KeyError, TypeError):
             return False
+
+    def update_dashboard_title(self, event, title):
+        """
+        :param event: Event to update
+        :param title: New title of the dashboard
+        :return:
+        If a dashboard exists with that title, the title is updated.
+        Returns False if no update was performed
+        Raises ValueError if there is an error updating the dashboard.
+        Returns JSON response if status = "success"
+        """
+
+        if event.name == title:
+            return False
+
+        dashboard = self.get_dashboard_by_name(event.name)
+
+        if dashboard is None:
+            return False
+
+        # Retrieve current panels
+        try:
+            panels = dashboard["dashboard"]["panels"]
+        except (KeyError, TypeError):
+            panels = []
+
+        # Create updated dashboard dict with updated list of panels
+        updated_dashboard = self.create_dashboard_update_dict(
+            dashboard, panels, True, title
+        )
+
+        # POST updated dashboard
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            self.endpoints["dashboards"],
+            data=json.dumps(updated_dashboard),
+            headers=headers,
+            auth=("api_key", self.api_token),
+        )
+
+        try:
+            if response.json()["status"] != "success":
+                raise ValueError(f"Event dashboard {event.name} not updated to {title}")
+            return response.json()
+        except KeyError as error:
+            raise ValueError(f"Event dashboard {event.name} not updated: {error}")
+
+    def create_panel_query(self, sensor, event):
+        field_dict = sensor.type_id.format
+        field_array = []
+        for field in field_dict:
+            field_array.append(field)
+
+        # Build fields portion of SELECT query (select each field)
+        fields_query = ""
+        if len(field_array):
+            for i in range(0, len(field_array) - 1):
+                fields_query += (
+                    f"value->'{field_array[i]}' AS \"{field_array[i]}\",\n\t"
+                )
+            fields_query += f"value->'{field_array[-1]}' AS \"{field_array[-1]}\""
+
+        # Build SQL query
+        panel_sql_query = f"""
+                SELECT \"timestamp\" AS \"time\",
+                {fields_query}
+                FROM ag_data_agmeasurement
+                WHERE $__timeFilter(\"timestamp\") AND sensor_id_id={sensor.id} AND
+                "event_uuid_id"='{event.uuid}'
+                ORDER BY timestamp
+                \n
+                """
+        return panel_sql_query
 
     def add_panel(self, sensor, event):
         """
@@ -376,7 +492,6 @@ class Grafana:
         """
 
         # Retrieve id, title, and fields from AGSensor object
-        sensor_id = sensor.id
         title = sensor.name
         field_dict = sensor.type_id.format
         field_array = []
@@ -392,7 +507,7 @@ class Grafana:
         # Retrieve current panels
         try:
             panels = dashboard_info["dashboard"]["panels"]
-        except KeyError:
+        except (KeyError, TypeError):
             panels = []
 
         # If first panel
@@ -414,21 +529,8 @@ class Grafana:
 
             new_panel_id = panels[-1]["id"] + 1
 
-        # Build fields portion of SELECT query (select each field)
-        fields_query = ""
-        if len(field_array):
-            for i in range(0, len(field_array) - 1):
-                fields_query += f"value->'{field_array[i]}' AS {field_array[i]},\n"
-            fields_query += f"value->'{field_array[-1]}' AS {field_array[-1]}"
-
         # Build SQL query
-        panel_sql_query = f"""
-        SELECT \"timestamp\" AS \"time\",
-        {fields_query}
-        FROM ag_data_agmeasurement
-        WHERE $__timeFilter(\"timestamp\") AND sensor_id_id={sensor_id} AND
-        "event_uuid_id"='{event.uuid}' \n
-        """
+        panel_sql_query = self.create_panel_query(sensor, event)
 
         # Build a panel dict for the new panel
         panel = self.create_panel_dict(
@@ -455,6 +557,130 @@ class Grafana:
                 raise ValueError(f"Sensor panel not added: {sensor.name}")
         except KeyError as error:
             raise ValueError(f"Sensor panel not added: {error}")
+
+    def update_panel_title(self, event, current_sensor_name, new_sensor_name):
+        # Retrieve current panels
+        dashboard_info = self.get_dashboard_by_name(event.name)
+
+        if dashboard_info is None:
+            return False
+
+        try:
+            panels = dashboard_info["dashboard"]["panels"]
+        except (KeyError, TypeError):
+            panels = []
+
+        if not panels:
+            return False
+
+        # Find the target panel and update it
+        for panel in panels:
+            if panel["title"] == current_sensor_name:
+                panel["title"] = new_sensor_name
+
+                # Create updated dashboard dict with updated list of panels
+                updated_dashboard = self.create_dashboard_update_dict(
+                    dashboard_info, panels
+                )
+
+                # POST updated dashboard
+                headers = {"Content-Type": "application/json"}
+                response = requests.post(
+                    self.endpoints["dashboards"],
+                    data=json.dumps(updated_dashboard),
+                    headers=headers,
+                    auth=("api_key", self.api_token),
+                )
+
+                try:
+                    if response.json()["status"] != "success":
+                        raise ValueError(
+                            f"Sensor panel title not updated:" f" {new_sensor_name}"
+                        )
+                except KeyError as error:
+                    raise ValueError(f"Sensor panel title not updated: {error}")
+
+    def update_panel_sensor(self, event, current_sensor_name, new_sensor):
+        # Retrieve current panels
+        dashboard_info = self.get_dashboard_by_name(event.name)
+
+        if dashboard_info is None:
+            return False
+
+        try:
+            panels = dashboard_info["dashboard"]["panels"]
+        except (KeyError, TypeError):
+            panels = []
+
+        if not panels:
+            return False
+
+        # Find the target panel and update it
+        for panel in panels:
+            if panel["title"] == current_sensor_name:
+                panel["title"] = new_sensor.name
+                panel["targets"][0]["rawSql"] = self.create_panel_query(
+                    new_sensor, event
+                )
+
+        # Create updated dashboard dict with updated list of panels
+        updated_dashboard = self.create_dashboard_update_dict(dashboard_info, panels)
+
+        # POST updated dashboard
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            self.endpoints["dashboards"],
+            data=json.dumps(updated_dashboard),
+            headers=headers,
+            auth=("api_key", self.api_token),
+        )
+
+        try:
+            if response.json()["status"] != "success":
+                raise ValueError(f"Sensor panel not updated: {new_sensor.name}")
+        except KeyError as error:
+            raise ValueError(f"Sensor panel not updated: {error}")
+
+    def delete_panel(self, panel_name, event):
+
+        # Retrieve current panels
+        dashboard_info = self.get_dashboard_by_name(event.name)
+
+        if dashboard_info is None:
+            return False
+
+        try:
+            panels = dashboard_info["dashboard"]["panels"]
+        except (KeyError, TypeError):
+            panels = []
+
+        # Build list of new panels, excluding any panel with title = name
+        if not panels:
+            return False
+
+        new_panels = [
+            panel for panel in panels if panel["title"].lower() != panel_name.lower()
+        ]
+
+        # Create updated dashboard dict with updated list of panels
+        updated_dashboard = self.create_dashboard_update_dict(
+            dashboard_info, new_panels
+        )
+
+        # POST updated dashboard
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            self.endpoints["dashboards"],
+            data=json.dumps(updated_dashboard),
+            headers=headers,
+            auth=("api_key", self.api_token),
+        )
+
+        try:
+            if response.json()["status"] != "success":
+                raise ValueError(f"Sensor panel not deleted: {panel_name}")
+        except KeyError as error:
+            raise ValueError(f"Sensor panel not deleted: {error}")
 
     def delete_all_panels_by_dashboard_name(self, name):
         """
@@ -510,6 +736,19 @@ class Grafana:
                 "Unable to locate event with dashboard name: " + dashboard_name
             )
 
+    def get_all_events(self):
+        dashboards = self.get_all_dashboards()
+
+        events = []
+
+        for dashboard in dashboards:
+            dashboard_title = dashboard["title"]
+            event = AGEvent.objects.filter(name=dashboard_title).first()
+            if event:
+                events.append(event)
+
+        return events
+
     def get_all_sensors(self, dashboard_name):
         """
 
@@ -520,10 +759,11 @@ class Grafana:
         """
         # Retrieve the current dashboard
         dashboard = self.get_dashboard_by_name(dashboard_name)
+
         try:
             dashboard = dashboard["dashboard"]
             panels = dashboard["panels"]
-        except KeyError:
+        except (KeyError, TypeError):
             panels = []
 
         sensor_names = []
@@ -560,7 +800,7 @@ class Grafana:
             "bars": False,
             "dashLength": 10,
             "dashes": False,
-            "datasource": self.database_name,
+            "datasource": "Datasource",
             "fill": 1,
             "fillGradient": 0,
             "gridPos": {"h": 9, "w": 12, "x": x, "y": y},
@@ -641,7 +881,9 @@ class Grafana:
         return panel
 
     # Helper method for add_panel
-    def create_dashboard_update_dict(self, dashboard_info, panels, overwrite=True):
+    def create_dashboard_update_dict(
+        self, dashboard_info, panels, overwrite=True, title=None
+    ):
         """
         Creates dashboard update dict with the provided dashboard_info dict and
         panels array. Can be posted to Create/Update Dashboard API endpoint to either
@@ -657,14 +899,14 @@ class Grafana:
             # Extract attributes from existing dashboard
             id = dashboard_info["dashboard"]["id"]
             uid = dashboard_info["dashboard"]["uid"]
-            title = dashboard_info["dashboard"]["title"]
+            title = title if title else dashboard_info["dashboard"]["title"]
             schema_version = dashboard_info["dashboard"]["schemaVersion"]
             # style = dashboard_info["dashboard"]["style"]
             tags = dashboard_info["dashboard"]["tags"]
             # templating = dashboard_info["dashboard"]["templating"]
             version = dashboard_info["meta"]["version"]
             folder_id = dashboard_info["meta"]["folderId"]
-        except KeyError:
+        except (KeyError, TypeError):
             raise ValueError(f"dashboard_info object is invalid: {dashboard_info}")
 
         # Prepare updated_dashboard object
@@ -675,13 +917,25 @@ class Grafana:
                 "title": title,
                 "version": version,
                 "panels": panels,
-                "refresh": False,
                 "schemaVersion": schema_version,
                 "style": "dark",
                 "tags": tags,
                 "templating": {"list": []},
                 "folderId": folder_id,
                 "overwrite": overwrite,
+                "time": {"from": "now-5m", "to": "now"},
+                "timepicker": {
+                    "refresh_intervals": [
+                        "0.1s",
+                        "0.5s",
+                        "1s",
+                        "5s",
+                        "10s",
+                        "30s",
+                        "1m",
+                    ]
+                },
+                "refresh": "0.5s",
             }
         }
 
