@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 PI_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_file = os.path.join(PI_DIR, "hardware/env")
+print("-------------------dotenv_file: {}-------------------".format(dotenv_file))
 if os.path.isfile(dotenv_file):  # pragma: no cover
     load_dotenv(dotenv_path=dotenv_file)
 else:
