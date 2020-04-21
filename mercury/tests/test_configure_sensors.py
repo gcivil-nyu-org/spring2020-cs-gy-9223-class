@@ -42,6 +42,15 @@ class TestConfigureSensorView(TestCase):
         "units": test_sensor["units"],
     }
 
+    edit_data = {
+        "edit_sensor": "",
+        "sensor-name": test_sensor["name"],
+        "sensor-name-updated": test_sensor["name"],
+        "field-names": test_sensor["field-names"],
+        "data-types": test_sensor["data-types"],
+        "units": test_sensor["units"],
+    }
+
     def setUp(self):
         test_code = EventCodeAccess(event_code="testcode", enabled=True)
         test_code.save()
@@ -410,16 +419,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["sensor-name-updated"] = self.updated_test_sensor_name
         self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.updated_test_sensor_name,
-                "field-names": self.test_sensor["field-names"],
-                "data-types": self.test_sensor["data-types"],
-                "units": self.test_sensor["units"],
-            },
+            data=mod_edit_data
         )
 
         # Check that AGSensorType object has new name
@@ -448,16 +452,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["field-names"][1] = self.updated_field_name_1
         response = self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": [self.field_name_1, self.updated_field_name_1],
-                "data-types": self.test_sensor["data-types"],
-                "units": self.test_sensor["units"],
-            },
+            data=mod_edit_data
         )
 
         # Check that POST redirects to sensor (same page reloads)
@@ -485,16 +484,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["field-names"][1] = self.updated_field_name_1
         self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": [self.field_name_1, self.updated_field_name_1],
-                "data-types": self.test_sensor["data-types"],
-                "units": self.test_sensor["units"],
-            },
+            data=mod_edit_data
         )
 
         # Check that field name updated
@@ -524,16 +518,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["data-types"][1] = self.updated_data_type_2
         response = self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": self.test_sensor["field-names"],
-                "data-types": [self.data_type_1, self.updated_data_type_2],
-                "units": self.test_sensor["units"],
-            },
+            data=mod_edit_data
         )
 
         # Check that POST redirects to sensor (same page reloads)
@@ -561,16 +550,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["data-types"][1] = self.updated_data_type_2
         self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": self.test_sensor["field-names"],
-                "data-types": [self.data_type_1, self.updated_data_type_2],
-                "units": self.test_sensor["units"],
-            },
+            data=mod_edit_data
         )
 
         # Check that data type updated
@@ -600,16 +584,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["units"][1] = self.updated_unit_2
         response = self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": self.test_sensor["field-names"],
-                "data-types": self.test_sensor["data-types"],
-                "units": [self.unit_1, self.updated_unit_2],
-            },
+            data=mod_edit_data
         )
 
         # Check that POST redirects to sensor (same page reloads)
@@ -637,16 +616,11 @@ class TestConfigureSensorView(TestCase):
         test_sensor_object.save()
 
         # Post Edited Name
+        mod_edit_data = self.edit_data.copy()
+        mod_edit_data["units"][1] = self.updated_unit_2
         self.client.post(
             reverse(self.sensor_url),
-            data={
-                "edit_sensor": "",
-                "sensor-name": self.test_sensor["name"],
-                "sensor-name-updated": self.test_sensor["name"],
-                "field-names": self.test_sensor["field-names"],
-                "data-types": self.test_sensor["data-types"],
-                "units": [self.unit_1, self.updated_unit_2],
-            },
+            data=mod_edit_data
         )
 
         # Check that unit updated
