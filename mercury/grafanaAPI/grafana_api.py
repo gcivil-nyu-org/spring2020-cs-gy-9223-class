@@ -218,7 +218,7 @@ class Grafana:
                         "1m",
                     ]
                 },
-                "refresh": "0.5s",
+                "refresh": "1s",
             },
             "folderId": 0,
             "overwrite": False,
