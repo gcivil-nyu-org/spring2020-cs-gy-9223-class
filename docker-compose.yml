@@ -4,6 +4,17 @@ services:
     com:
         build:
             context: .
-            dockerfile: hardware/Dockerfile
+            dockerfile: Dockerfile
             
     sense:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - PI_TYPE=sensePI
+                - LAN_SERVER_IP=com
+        environment: 
+            - PI_TYPE=sensePI
+            - LAN_SERVER_IP=com
+        depends_on: 
+            - com
