@@ -296,7 +296,10 @@ class Grafana:
     def delete_dashboard_by_name(self, name):
         search_name = self.create_safe_string(name)
         endpoint = os.path.join(self.hostname, "api/dashboards/db", search_name)
-        response = requests.get(url=endpoint, auth=("api_key", self.api_token))
+
+        headers = {"Accept": "application/json"}
+        response = requests.get(url=endpoint, headers=headers, auth=("api_key",
+                                                              self.api_token))
 
         print(f"response: {response}")
         print(f"response.text: {response.text}")
