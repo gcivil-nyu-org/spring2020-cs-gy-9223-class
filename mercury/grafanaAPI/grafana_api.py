@@ -299,6 +299,7 @@ class Grafana:
         response = requests.get(url=endpoint, auth=("api_key", self.api_token))
 
         print(f"response: {response}")
+        print(f"response.text: {response.text}")
         print(f"response.json: {response.json()}")
         dashboard = response.json().get("dashboard")
         if dashboard:
