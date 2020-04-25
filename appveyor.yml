@@ -28,8 +28,8 @@ install:
   - "SET PATH=%POSTGRES_PATH%\\bin;%PATH%"
   - "python --version"
   - docker pull grafana/grafana
-  - docker run -d -p 3000:3000 grafana/grafana
-  - docker logs grafana/grafana
+  - docker run -d -p 3000:3000 --name grafana grafana/grafana
+  - docker logs grafana
   - docker ps -a
   - pip install --upgrade pip
   - pip install -r requirements.txt
