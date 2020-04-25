@@ -31,7 +31,6 @@ install:
   - docker run -d -p 3000:3000 --name grafana grafana/grafana
   - docker logs grafana
   - docker ps -a
-  - cat /etc/grafana/grafana.ini
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
