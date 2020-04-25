@@ -58,3 +58,6 @@ test_script:
 after_test:
   - coveralls
   - cat geckodriver.log
+
+on_failure:
+  - docker logs grafana
