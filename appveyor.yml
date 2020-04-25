@@ -38,8 +38,8 @@ install:
 
 build_script:
   - psql -c "create database mercury;"
-  - echo $http_proxy
-  - echo $https_proxy
+  #- echo $http_proxy
+  #- echo $https_proxy
   #- set
   # echo set
   #- set http_proxy=http://127.0.0.1:80
