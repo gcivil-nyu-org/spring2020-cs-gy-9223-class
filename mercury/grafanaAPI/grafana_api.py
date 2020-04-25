@@ -298,6 +298,9 @@ class Grafana:
         endpoint = os.path.join(self.hostname, "api/dashboards/db", search_name)
         response = requests.get(url=endpoint, auth=("api_key", self.api_token))
 
+        print(response)
+        print(response.status_code)
+        print(response.content)
         dashboard = response.json().get("dashboard")
         if dashboard:
             return self.delete_dashboard(dashboard["uid"])
