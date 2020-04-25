@@ -300,7 +300,6 @@ class Grafana:
 
         print(response)
         print(response.status_code)
-        print(response.content)
         print(response.json())
         dashboard = response.json().get("dashboard")
         if dashboard:
