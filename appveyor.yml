@@ -31,6 +31,7 @@ install:
   - docker run -d -p 3000:3000 --name grafana grafana/grafana
   - docker logs grafana
   - docker ps -a
+  - cat /etc/grafana/grafana.ini
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
@@ -38,8 +39,8 @@ install:
 
 build_script:
   - psql -c "create database mercury;"
-  #- echo $http_proxy
-  #- echo $https_proxy
+  - echo $http_proxy
+  - echo $https_proxy
   #- set
   # echo set
   #- set http_proxy=http://127.0.0.1:80
