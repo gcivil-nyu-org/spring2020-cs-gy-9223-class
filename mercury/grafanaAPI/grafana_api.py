@@ -298,8 +298,9 @@ class Grafana:
         endpoint = os.path.join(self.hostname, "api/dashboards/db", search_name)
 
         headers = {"Accept": "application/json"}
-        response = requests.get(url=endpoint, headers=headers, auth=("api_key",
-                                                              self.api_token))
+        response = requests.get(
+            url=endpoint, headers=headers, auth=("api_key", self.api_token)
+        )
 
         print(f"response: {response}")
         print(f"response.text: {response.text}")
