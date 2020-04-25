@@ -3,8 +3,7 @@ chardet==3.0.4
 future==0.18.2
 idna==2.9
 iso8601==0.1.12
-# pyserial==3.4
-pyserial
+pyserial==3.4
 python-dotenv==0.13.0
 PyYAML==5.3.1
 requests==2.23.0
