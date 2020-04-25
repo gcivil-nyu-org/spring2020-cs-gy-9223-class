@@ -49,9 +49,11 @@ build_script:
   #- python test_socket.py
   - python manage.py migrate
   - python manage.py collectstatic --noinput
+
+test_script:
   - black --check --diff .
   - flake8 .
-  - coverage run manage.py test
+  - coverage run manage.py test mercury.tests.test_gf_configs.TestGFConfig.test_config_post_event_exists_dashboard_created
 
 after_test:
   - coveralls
