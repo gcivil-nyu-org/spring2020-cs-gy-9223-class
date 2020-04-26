@@ -18,3 +18,5 @@ services:
             - LAN_SERVER_IP=com
         depends_on: 
             - com
+        volumes:
+            - "/dev/serial0:/dev/serial0"
