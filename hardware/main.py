@@ -48,7 +48,7 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
         orie = sensePi.get_orientation()
         all = sensePi.get_all()
         coords = None
-        if gpsPi != None:
+        if gpsPi is not None:
             coords = gpsPi.get_geolocation()
 
         if coords is not None:
