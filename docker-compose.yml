@@ -11,7 +11,7 @@ services:
             context: .
             dockerfile: Dockerfile
             args:
-                - PI_TYPE=sensePI
+                - HARDWARE_TYPE=sensePI
                 - LAN_SERVER_IP=com
         environment: 
             - PI_TYPE=sensePI
@@ -19,5 +19,5 @@ services:
         depends_on: 
             - com
         volumes:
-            # - "/Users/alexbiehl/dev/serial0:/dev/serial0"
-            - "/dev/serial0:/dev/serial0"
+            - "/Users/alexbiehl/dev/serial0:/dev/serial0"
+            # - "/dev/serial0:/dev/serial0"
