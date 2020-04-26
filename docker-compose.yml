@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
     com:
@@ -9,15 +9,17 @@ services:
     sense:
         build:
             context: .
-            dockerfile: Dockerfile
+            # dockerfile: Dockerfile
+            cache_from: 
+                - nyumotorsportstelemetryorg/mercury:latest
             args:
-                - HARDWARE_TYPE=sensePI
+                - HARDWARE_TYPE=sensePi
                 - LAN_SERVER_IP=com
         environment: 
-            - PI_TYPE=sensePI
+            - HARDWARE_TYPE=sensePi
             - LAN_SERVER_IP=com
         depends_on: 
             - com
         volumes:
-            - "/Users/alexbiehl/dev/serial0:/dev/serial0"
-            # - "/dev/serial0:/dev/serial0"
+            # - "/Users/alexbiehl/dev/serial0:/dev/serial0"
+            - "/dev/serial0:/dev/serial0"
