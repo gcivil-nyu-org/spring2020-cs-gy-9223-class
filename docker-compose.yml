@@ -15,9 +15,11 @@ services:
             args:
                 - HARDWARE_TYPE=sensePi
                 - LAN_SERVER_IP=com
+                - USE_GPS=False
         environment: 
             - HARDWARE_TYPE=sensePi
             - LAN_SERVER_IP=com
+            - USE_GPS=False
         depends_on: 
             - com
         volumes:

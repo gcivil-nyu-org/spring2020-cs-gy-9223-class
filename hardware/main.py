@@ -33,7 +33,10 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
     sensor_ids[sensor_keys["ACCELERATION"]] = 5
     sensor_ids[sensor_keys["ORIENTATION"]] = 6
     sensePi = SensePi(sensor_ids=sensor_ids)
-    gpsPi = GPSReader()
+
+    gpsPi = None
+    if os.environ.get("USE_GPS"):
+        gpsPi = GPSReader()
     client = WebClient()
 
     while True:
@@ -44,7 +47,9 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
         acc = sensePi.get_acceleration()
         orie = sensePi.get_orientation()
         all = sensePi.get_all()
-        coords = gpsPi.get_geolocation()
+        coords = None
+        if gpsPi != None:
+            coords = gpsPi.get_geolocation()
 
         if coords is not None:
             data = [temp, pres, hum, acc, orie, coords, all]
