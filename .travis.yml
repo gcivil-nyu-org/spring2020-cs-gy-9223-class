@@ -124,6 +124,7 @@ jobs:
         - docker-compose --version
       
       script:
+        - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - docker-compose up --abort-on-container-exit
 
 
