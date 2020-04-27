@@ -125,7 +125,7 @@ jobs:
       
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        - docker build --pull --cache-from nyumotorsportstelemetryorg/mercury --tag nyumotorsportstelemetryorg/mercury .
+        - docker pull nyumotorsportstelemetryorg/mercury:latest
         - docker-compose up --abort-on-container-exit
 
 

@@ -35,7 +35,7 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
     sensePi = SensePi(sensor_ids=sensor_ids)
 
     gpsPi = None
-    if os.environ.get("USE_GPS"):
+    if os.environ.get("USE_GPS") and os.environ.get("USE_GPS") == "True":
         gpsPi = GPSReader()
     client = WebClient()
 
