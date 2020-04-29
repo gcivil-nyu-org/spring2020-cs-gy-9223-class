@@ -114,8 +114,6 @@ jobs:
           packages:
             - docker-ce
       before_install:
-        # - sudo apt-get update
-        # - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         - docker-compose --version
         - sudo rm /usr/local/bin/docker-compose
         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -125,7 +123,8 @@ jobs:
       
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        - docker pull nyumotorsportstelemetryorg/mercury:latest
+        # - docker pull nyumotorsportstelemetryorg/mercury:latest
+        - docker-compose build --pull
         - docker-compose run sense sense_play hardware/fixtures/experiment.hat
         - docker-compose up --abort-on-container-exit --no-recreate
 

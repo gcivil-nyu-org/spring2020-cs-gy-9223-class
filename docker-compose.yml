@@ -11,11 +11,11 @@ services:
             context: .
             dockerfile: Dockerfile
             cache_from: 
-                - nyumotorsportstelemetryorg/mercury:latest
-            args:
-                - HARDWARE_TYPE=sensePi
-                - LAN_SERVER_IP=com
-                - USE_GPS=False
+                - nyumotorsportstelemetryorg/mercury
+            # args:
+            #     - HARDWARE_TYPE=sensePi
+            #     - LAN_SERVER_IP=com
+            #     - USE_GPS=False
         environment: 
             - HARDWARE_TYPE=sensePi
             - LAN_SERVER_IP=com
