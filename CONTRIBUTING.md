@@ -23,7 +23,8 @@ This section guides you through reporting an issue. Following these guidelines w
 You can contribute in the following two ways:
 
 ### 1. Workflow for contributing code
-   1. Make a feature branch `git checkout -b <new_branch_name>`. Then, make your changes
+   1. Make a feature branch `git checkout -b <new_branch_name>`. Then, make your changes. This is not practical please use https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork
+   
    2. Ensure that you include tests that exercise not only your feature, but also any other code that might be impacted. This is very important.
    3. Check you are using consistent style by running `scripts/check.sh` and make any recommended changes (such as running black to re-format). Then run your tests with `python manage.py test` and fix errors. 
    4. Add the files you changed to the project. One way of doing this is by using `git add -A` and then committing your changes with `git commit -m "<what_this_commit_does>"`.
