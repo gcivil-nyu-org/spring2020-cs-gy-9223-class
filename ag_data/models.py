@@ -18,6 +18,8 @@ class AGVenue(models.Model):
     longitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=True, null=True
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -32,6 +34,8 @@ class AGEvent(models.Model):
     date = models.DateTimeField(default=timezone.now)
     description = models.CharField(max_length=100, null=False, blank=True)
     venue_uuid = models.ForeignKey(AGVenue, null=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class AGSensorType(models.Model):
@@ -43,6 +47,8 @@ class AGSensorType(models.Model):
     name = models.CharField(max_length=1024, blank=True)
     processing_formula = models.IntegerField(default=0, null=False)
     format = JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class AGSensor(models.Model):
@@ -52,6 +58,8 @@ class AGSensor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=1024, blank=True)
     type_id = models.ForeignKey(AGSensorType, null=False, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class AGMeasurement(models.Model):
