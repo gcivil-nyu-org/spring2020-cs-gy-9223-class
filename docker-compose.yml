@@ -9,7 +9,7 @@ services:
     sense:
         build:
             context: .
-            # dockerfile: Dockerfile
+            dockerfile: Dockerfile
             cache_from: 
                 - nyumotorsportstelemetryorg/mercury:latest
             args:

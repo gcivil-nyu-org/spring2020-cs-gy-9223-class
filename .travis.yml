@@ -126,8 +126,8 @@ jobs:
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
         - docker pull nyumotorsportstelemetryorg/mercury:latest
-        - sense_play hardware/fixtures/experiment.hat
-        - docker-compose up --abort-on-container-exit
+        - docker-compose run sense sense_play hardware/fixtures/experiment.hat
+        - docker-compose up --abort-on-container-exit --no-recreate
 
 
 
