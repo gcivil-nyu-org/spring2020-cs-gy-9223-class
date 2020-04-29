@@ -43,13 +43,14 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
         hum = sensePi.get_humidity()
         acc = sensePi.get_acceleration()
         orie = sensePi.get_orientation()
-        all = sensePi.get_all()
-        coords = gpsPi.get_geolocation()
+        # all = sensePi.get_all()
+        # coords = gpsPi.get_geolocation()
 
-        if coords is not None:
-            data = [temp, pres, hum, acc, orie, coords, all]
-        else:
-            data = [temp, pres, hum, acc, orie, all]
+        # if coords is not None:
+        #     data = [temp, pres, hum, acc, orie, coords, all]
+        # else:
+        #     data = [temp, pres, hum, acc, orie, all]
+        data = [temp, pres, hum, acc, orie]
 
         for i in data:
             payload = json.dumps(i)
@@ -60,6 +61,23 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
                 print("error occurred: {}".format(str(err)))
                 raise
             time.sleep(1)
+
+elif os.environ["HARDWARE_TYPE"] == "gpsPi":
+    gpsPi = GPSReader()
+
+    while True:
+        coords = gpsPi.get_geolocation()
+        data = [coords]
+        for i in data:
+            payload = json.dumps(i)
+            try:
+                client.ping_lan_server(payload)
+            except Exception as err:
+                print("error occurred: {}".format(str(err)))
+                raise
+            time.sleep(1)
+
+
 else:
     print("Local Django Server")
     transceiver = Transceiver()
