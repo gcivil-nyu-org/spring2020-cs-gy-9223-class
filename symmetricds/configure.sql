@@ -75,14 +75,6 @@ insert into sym_trigger_router
 values('all_mercury_table_trigger','group1_to_0', 100, current_timestamp, current_timestamp);
 
 insert into sym_conflict
-(conflict_id,source_node_group_id,target_node_group_id,detect_type,resolve_type,ping_back,create_time,last_update_time)
-values('conflict_1','group0','group1','USE_PK_DATA','FALLBACK','OFF',current_timestamp , current_timestamp),
-('conflict_2','group1','group0','USE_PK_DATA','FALLBACK','OFF',current_timestamp , current_timestamp),
-('conflict_3','group0','group1','USE_OLD_DATA','FALLBACK','OFF',current_timestamp , current_timestamp),
-('conflict_4','group1','group0','USE_OLD_DATA','FALLBACK','OFF',current_timestamp , current_timestamp),
-('conflict_5','group0','group1','USE_CHANGED_DATA','FALLBACK','OFF',current_timestamp , current_timestamp),
-('conflict_6','group1','group0','USE_CHANGED_DATA','FALLBACK','OFF',current_timestamp , current_timestamp);
--- ('conflict_7','group0','group1','USE_TIMESTAMP','NEWER_WINS','SINGLE_ROW',current_timestamp , current_timestamp),
--- ('conflict_8','group1','group0','USE_TIMESTAMP','NEWER_WINS','SINGLE_ROW',current_timestamp , current_timestamp),
--- ('conflict_9','group0','group1','USE_VERSION','NEWER_WINS','SINGLE_ROW',current_timestamp , current_timestamp),
--- ('conflict_10','group1','group0','USE_VERSION','NEWER_WINS','SINGLE_ROW',current_timestamp , current_timestamp);
+(conflict_id,source_node_group_id,target_node_group_id,detect_type,resolve_type,ping_back,resolve_row_only,DETECT_EXPRESSION,create_time,last_update_time)
+values('conflict_1','group0','group1','USE_TIMESTAMP','NEWER_WINS','OFF', 1, 'updated_at', current_timestamp , current_timestamp),
+('conflict_2','group1','group0','USE_TIMESTAMP','NEWER_WINS','OFF',1 , 'updated_at', current_timestamp , current_timestamp);
