@@ -2,14 +2,14 @@ import os
 import time
 import json
 
-from dotenv import load_dotenv
-
-PI_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-dotenv_file = os.path.join(PI_DIR, "hardware/env")
-if os.path.isfile(dotenv_file):  # pragma: no cover
-    load_dotenv(dotenv_path=dotenv_file)
-else:
-    print("dotenv_file was not a file")
+#from dotenv import load_dotenv
+#
+#PI_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#dotenv_file = os.path.join(PI_DIR, "hardware/env")
+#if os.path.isfile(dotenv_file):  # pragma: no cover
+#    load_dotenv(dotenv_path=dotenv_file)
+#else:
+#    print("dotenv_file was not a file")
 
 from hardware.CommunicationsPi.radio_transceiver import Transceiver  # noqa: E402
 from hardware.CommunicationsPi.comm_pi import CommPi  # noqa: E402
@@ -64,6 +64,7 @@ elif os.environ["HARDWARE_TYPE"] == "sensePi":
 
 elif os.environ["HARDWARE_TYPE"] == "gpsPi":
     gpsPi = GPSReader()
+    client = WebClient()
 
     while True:
         coords = gpsPi.get_geolocation()
