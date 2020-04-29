@@ -68,15 +68,16 @@ elif os.environ["HARDWARE_TYPE"] == "gpsPi":
 
     while True:
         coords = gpsPi.get_geolocation()
-        data = [coords]
-        for i in data:
-            payload = json.dumps(i)
-            try:
-                client.ping_lan_server(payload)
-            except Exception as err:
-                print("error occurred: {}".format(str(err)))
-                raise
-            time.sleep(1)
+        if coords is not None:
+            data = [coords]
+            for i in data:
+                payload = json.dumps(i)
+                try:
+                    client.ping_lan_server(payload)
+                except Exception as err:
+                    print("error occurred: {}".format(str(err)))
+                    raise
+                time.sleep(1)
 
 
 else:
