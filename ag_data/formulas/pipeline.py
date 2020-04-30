@@ -30,37 +30,34 @@ class FormulaPipeline:
             active = AGActiveEvent.objects.first()
             if active:
                 event = active.agevent
-
-        try:
-            if event:
-                formula = formulas.formula_map.get(
-                    sensor.type_id.processing_formula, formulas.identity
-                )
-
-                preprocessed = preprocess(sensor, formula, timestamp, measurement)
-                result = formula(**preprocessed)
-
-                return AGMeasurement.objects.create(
-                    timestamp=timestamp,
-                    event_uuid=event,
-                    sensor_id=sensor,
-                    value={"raw": measurement, "result": result},
-                )
             else:
-                raise TypeError
+                # TODO: handle no active event
+                # Currently no active event, error should be recorded
+                data = {
+                    "sensor": sensor,
+                    "timestamp": timestamp,
+                    "measurement": measurement,
+                }
+                record.save_error(
+                    raw_data=str(data),
+                    error_code=record.ERROR_CODE["NO_ACT_EVENT"],
+                    error_description="Currently no active event",
+                )
+                raise Exception("no active event")
 
-        except TypeError:
-            # Currently no active event, error should be recorded
-            data = {
-                "sensor": sensor,
-                "timestamp": timestamp,
-                "measurement": measurement,
-            }
-            record.save_error(
-                raw_data=str(data),
-                error_code=record.ERROR_CODE["NO_ACT_EVENT"],
-                error_description="Currently no active event",
-            )
+        formula = formulas.formula_map.get(
+            sensor.type_id.processing_formula, formulas.identity
+        )
+
+        preprocessed = preprocess(sensor, formula, timestamp, measurement)
+        result = formula(**preprocessed)
+
+        return AGMeasurement.objects.create(
+            timestamp=timestamp,
+            event_uuid=event,
+            sensor_id=sensor,
+            value={"raw": measurement, "result": result},
+        )
 
 
 shared_instance = FormulaPipeline()
