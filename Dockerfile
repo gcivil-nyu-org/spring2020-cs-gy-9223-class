@@ -19,10 +19,13 @@ COPY ./hardware/setup/raspberrypi-common.sh .
 # run setup
 RUN bash ./raspberrypi-common.sh
 
-COPY ./hardware/pi_requirements.txt .
-RUN sudo python3 -m pip install pip --upgrade --force
-RUN sudo pip3 install -r pi_requirements.txt
-
 COPY ./hardware hardware/
+RUN bash ./hardware/setup/run_on_boot.sh
 
-CMD [ "python3", "-m", "hardware.main" ]
+# COPY ./hardware/pi_requirements.txt .
+# RUN sudo python3 -m pip install pip --upgrade --force
+# RUN sudo pip3 install -r pi_requirements.txt
+
+# COPY ./hardware hardware/
+
+# CMD [ "python3", "-m", "hardware.main" ]
